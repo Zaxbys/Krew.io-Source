@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Document Setup -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Set website metadata -->
+    <title>Staff UI 😱</title>
+
+    <!-- Get icons -->
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png">
+
+    <!-- Get styles -->
+    <link rel="stylesheet" href="/build/styles.min.css">
+
+    <!-- Get scripts from Cloudflare CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hyperapp/1.2.4/hyperapp.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.1/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.7/js/tether.min.js"></script>
+
+    <!-- Get other external scripts -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js"></script>
+
+    <!-- Get local scripts -->
+    <script src="/build/libs/growl-notification.min.js"></script>
+</head>
+
+<body>
+    <div class="modal show text-xs-center" id="splash-modal">
+        <div id="modal-dialog" class="container row justify-content-center" style="width: 100%; display: block;" role="document">
+
+
+            <div id="data-div" class="blue-bg">
+                <h4 class="table-title">Player Data</h4>
+                <small>Online players with their corresponding data</small>
+
+                <div id="data-table-div">
+                    <table id="data-table">
+                        <tr>
+                            <th>Player Name</th>
+                            <th>Clan</th>
+                            <th>Gold</th>
+                            <th>Weapon</th>
+                            <th>Level</th>
+                            <th>Krew Name</th>
+                            <th>Captain</th>
+                            <th>Krew Gold</th>
+                            <th>Boat</th>
+                            <th>HP</th>
+                            <th>Krewmates</th>
+                            <th>Ship State</th>
+                            <th>Ship Position (XYZ)</th>
+                            <th>Staff Controls</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+            <div id="chat-messages-div" class="blue-bg">
+                <div id="clear-chat" class="btn btn-secondary btn-sm action-clear-chat float-right disabled">
+                    <i class="icofont icofont-trash"></i>
+                </div>
+                <h4 class="table-title">Chat Messages</h4>
+
+                <hr style="border-top: 1px solid white;">
+                <div id="chat-messages-text-div"></div>
+            </div>
+
+
+            <div id="log-div" class="blue-bg">
+                <h4 class="table-title">Logs</h4>
+
+                <hr style="border-top: 1px solid white;">
+                <div id="log-text-div"></div>
+            </div>
+
+
+            <div id="connection-div" class="blue-bg">
+                <div id="select-server" class="form-group" style="margin-bottom: .5rem; margin-top: .7rem">
+                    <select id="server-list" class="custom-select form-control"></select>
+                </div>
+                <button id="connect-button" class="btn play-btn btn-block">Connect</button>
+            </div>
+
+
+            <div id="misc-div" class="blue-bg">
+                <h4 class="table-title">Misc Controls</h4>
+                <br>
+                <div id="recompense" class="btn btn-secondary btn-sm action-recompense disabled">
+                    <i class="icofont icofont-money-bag"></i>
+                </div>
+                <div id="restart" class="btn btn-secondary btn-sm action-restart disabled">
+                    <i class="icofont icofont-refresh"></i>
+                </div>
+                <div id="update" class="btn btn-secondary btn-sm action-update disabled">
+                    <i class="icofont icofont-code-alt"></i>
+                </div>
+            </div>
+
+
+            <div class="modal fade text-sm-center" id="warn-modal" role="dialog">
+                <div class="modal-dialog modal-md modal-content modal-body" role="document" style="top: 25%;">
+                    <br>
+                    <h1 id="warn-player-heading">Warn</h1>
+                    <br><br>
+
+                    <div id="warn-input-container" display="inline">
+                        <input type="text" id="warn-reason" class="form-control" style="float: left; width:80%;" placeholder="Warn reason" required>
+                        <input type="submit" id="submit-warn" class="btn btn-success btn-md" style="float: left; width:18%; margin-left: 2%;" value="Warn"></input>
+                    </div>
+
+                    <br><br>
+                </div>
+            </div>
+
+            <div class="modal fade text-sm-center" id="unmute-modal" role="dialog">
+                <div class="modal-dialog modal-md modal-content modal-body" role="document" style="top: 25%;">
+                    <br>
+                    <h1 id="unmute-player-heading">Unmute</h1>
+                    <br><br>
+
+                    <input type="submit" id="submit-unmute" class="btn btn-success btn-md" style="width: 80%; float: left; margin-left: 10%;" value="Confirm Unmute"></input>
+
+                    <br><br>
+                </div>
+            </div>
+
+            <div class="modal fade text-sm-center" id="mute-modal" role="dialog">
+                <div class="modal-dialog modal-md modal-content modal-body" role="document" style="top: 25%;">
+                    <br>
+                    <h1 id="mute-player-heading">Mute</h1>
+                    <br><br>
+
+                    <div id="mute-input-container" display="inline">
+                        <input type="text" id="mute-reason" class="form-control" style="float: left; width:80%;" placeholder="Mute reason" required>
+                        <input type="submit" id="submit-mute" class="btn btn-success btn-md" style="float: left; width:18%; margin-left: 2%;" value="Mute"></input>
+                    </div>
+
+                    <br><br>
+                </div>
+            </div>
+
+            <div class="modal fade text-sm-center" id="kick-modal" role="dialog">
+                <div class="modal-dialog modal-md modal-content modal-body" role="document" style="top: 25%;">
+                    <br>
+                    <h1 id="kick-player-heading">Kick</h1>
+                    <br><br>
+
+                    <div id="kick-input-container" display="inline">
+                        <input type="text" id="kick-reason" class="form-control" style="float: left; width:80%;" placeholder="Kick reason" required>
+                        <input type="submit" id="submit-kick" class="btn btn-success btn-md" style="float: left; width:18%; margin-left: 2%;" value="Kick"></input>
+                    </div>
+
+                    <br><br>
+                </div>
+            </div>
+
+            <div class="modal fade text-sm-center" id="ban-modal" role="dialog">
+                <div class="modal-dialog modal-md modal-content modal-body" role="document" style="top: 25%;">
+                    <br>
+                    <h1 id="ban-player-heading">Ban</h1>
+                    <br><br>
+
+                    <div id="ban-input-container" display="inline">
+                        <input type="text" id="ban-reason" class="form-control" style="float: left; width:80%;" placeholder="Ban reason" required>
+                        <input type="submit" id="submit-ban" class="btn btn-success btn-md" style="float: left; width:18%; margin-left: 2%;" value="Ban"></input>
+                    </div>
+
+                    <br><br>
+                </div>
+            </div>
+
+            <div class="modal fade text-sm-center" id="give-modal" role="dialog">
+                <div class="modal-dialog modal-md modal-content modal-body" role="document" style="top: 25%;">
+                    <br>
+                    <h1 id="give-player-heading">Give</h1>
+                    <br><br>
+
+                    <div id="give-input-container" display="inline">
+                        <input type="text" id="give-amount" class="form-control" style="float: left; width:80%;" placeholder="Amount" required>
+                        <input type="submit" id="submit-give" class="btn btn-success btn-md" style="float: left; width:18%; margin-left: 2%;" value="Give"></input>
+                    </div>
+
+                    <br><br>
+                </div>
+            </div>
+
+            <div class="modal fade text-sm-center" id="recompense-modal" role="dialog">
+                <div class="modal-dialog modal-md modal-content modal-body" role="document" style="top: 25%;">
+                    <br>
+                    <h1 id="recompense-heading">Recompense</h1>
+                    <br><br>
+
+                    <div id="recompense-input-container" display="inline">
+                        <input type="text" id="recompense-amount" class="form-control" style="float: left; width:75%;" placeholder="Amount" required>
+                        <input type="submit" id="submit-recompense" class="btn btn-success btn-md" style="float: left; width:23%; margin-left: 2%;" value="Recompense"></input>
+                    </div>
+
+                    <br><br>
+                </div>
+            </div>
+
+            <div class="modal fade text-sm-center" id="restart-modal" role="dialog">
+                <div class="modal-dialog modal-md modal-content modal-body" role="document" style="top: 25%;">
+                    <br>
+                    <h1 id="restart-heading">Restart the Server</h1>
+                    <br><br>
+
+                    <input type="submit" id="submit-restart" class="btn btn-success btn-md" style="width: 80%; float: left; margin-left: 10%;" value="Confirm Server Restart"></input>
+
+                    <br><br>
+                </div>
+            </div>
+
+            <div class="modal fade text-sm-center" id="update-modal" role="dialog">
+                <div class="modal-dialog modal-md modal-content modal-body" role="document" style="top: 25%;">
+                    <br>
+                    <h1 id="update-heading">Update the Server</h1>
+                    <br><br>
+
+                    <input type="submit" id="submit-update" class="btn btn-success btn-md" style="width: 80%; float: left; margin-left: 10%;" value="Confirm Update"></input>
+
+                    <br><br>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+    <script src="/build/staffUI.js"></script>
+
+    <style>
+        body {
+            background-color: rgb(0, 17, 31) !important;
+        }
+
+        #connection-div {
+            width: 79.75%;
+            min-height: 150px;
+            float: left;
+            margin: 5px auto;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+
+        #misc-div {
+            width: 19.75%;
+            min-height: 150px;
+            float: right;
+            margin: 5px auto;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+
+        #data-div {
+            width: 100%;
+            margin: 5px auto;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+
+
+        #data-table-div {
+            overflow-y: auto;
+            -ms-overflow-style: none;
+            max-height: 900px;
+            margin-top: 10px;
+            border-radius: 10px 10px 10px 10px;
+        }
+
+        #data-table {
+            margin-top: 5px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        #data-table th {
+            padding: 8px;
+            border-top: 1px solid;
+            border-bottom: 1px solid;
+            text-align: center;
+        }
+
+        #data-table {
+            padding: 5px;
+            text-align: center;
+        }
+
+        #data-table,
+        th,
+        td {
+            border-collapse: collapse;
+        }
+
+        .table-title {
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        #chat-messages-div {
+            width: 49.75%;
+            float: left;
+            margin: 5px auto;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+
+        #log-div {
+            width: 49.75%;
+            float: right;
+            margin: 5px auto;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+
+        #chat-messages-text-div,
+        #log-text-div {
+            white-space: pre-wrap;
+            text-align: left;
+            overflow-y: auto;
+            -ms-overflow-style: none;
+            min-height: 500px;
+            max-height: 500px;
+            margin-top: 10px;
+            border-radius: 10px 10px 10px 10px;
+        }
+
+        .action-warn {
+            background-color: #fff176;
+            border-color: #fff176;
+        }
+
+        .action-warn:hover {
+            background-color: #fff176af;
+            border-color: #fff176af;
+        }
+
+        .action-unmute {
+            background-color: #82e993;
+            border-color: #82e993;
+        }
+
+        .action-unmute:hover {
+            background-color: #82e993af;
+            border-color: #82e993af;
+        }
+
+        .action-mute {
+            background-color: #ffa66b;
+            border-color: #ffa66b;
+        }
+
+        .action-mute:hover {
+            background-color: #ffa66baf;
+            border-color: #ffa66baf;
+        }
+
+        .action-kick {
+            background-color: #ff8070;
+            border-color: #ff8070;
+        }
+
+        .action-kick:hover {
+            background-color: #ff8070af;
+            border-color: #ff8070af;
+        }
+
+        .action-kick.disabled,
+        .action-kick.disabled:hover {
+            background-color: #ffb5ac;
+            border-color: #ffb5ac;
+        }
+
+        .action-ban {
+            background-color: #ff3e3e;
+            border-color: #ff3e3e;
+        }
+
+        .action-ban:hover {
+            background-color: #ff3e3eaf;
+            border-color: #ff3e3eaf;
+        }
+
+        .action-ban.disabled,
+        .action-ban.disabled:hover {
+            background-color: #ff7e7e;
+            border-color: #ff7e7e;
+        }
+
+        .action-give {
+            background-color: #fffc52;
+            border-color: #fffc52;
+        }
+
+        .action-give:hover {
+            background-color: #fffc52af;
+            border-color: #fffc52af;
+        }
+
+        .action-give.disabled,
+        .action-give.disabled:hover {
+            background-color: #fffda3;
+            border-color: #fffda3;
+        }
+
+        .action-clear-chat {
+            background-color: #ff3e3e;
+            border-color: #ff3e3e;
+        }
+
+        .action-clear-chat:hover {
+            background-color: #ff3e3eaf;
+            border-color: #ff3e3eaf;
+        }
+
+        .action-clear-chat.disabled,
+        .action-clear-chat.disabled:hover {
+            background-color: #ff7e7e;
+            border-color: #ff7e7e;
+        }
+
+        .action-recompense {
+            background-color: #ffd000;
+            border-color: #ffd000;
+        }
+
+        .action-recompense:hover {
+            background-color: #ffd000af;
+            border-color: #ffd000af;
+        }
+
+        .action-recompense.disabled,
+        .action-recompense.disabled:hover {
+            background-color: #ffefa6;
+            border-color: #ffefa6;
+        }
+
+        .action-restart {
+            background-color: #ff8b3e;
+            border-color: #ff8b3e;
+        }
+
+        .action-restart:hover {
+            background-color: #ff8b3eaf;
+            border-color: #ff8b3eaf;
+        }
+
+        .action-restart.disabled,
+        .action-restart.disabled:hover {
+            background-color: #ffba8c;
+            border-color: #ffba8c;
+        }
+
+        .action-update {
+            background-color: #ff0000;
+            border-color: #ff0000;
+        }
+
+        .action-update:hover {
+            background-color: #ff0000af;
+            border-color: #ff0000af;
+        }
+
+        .action-update.disabled,
+        .action-update.disabled:hover {
+            background-color: #ff7373;
+            border-color: #ff7373;
+        }
+    </style>
+</body>
