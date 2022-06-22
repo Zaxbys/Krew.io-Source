@@ -29,7 +29,7 @@ In production, Nginx proxies the local webfront port to 443 and redirects 80 to 
 su
 
 # Obtaining the files
-wget https://raw.githubusercontent.com/ZEROPOINTBRUH/Krew.io-Source/main/bash%20installation/automated-install.sh
+wget https://raw.githubusercontent.com/Zaxbys/Krew.io-Source/main/bash%20installation/automated-install.sh
 
 # Changing Permissions of the installation
 chmod 777 automated-install.sh
@@ -40,8 +40,8 @@ chmod 777 automated-install.sh
 
 ### After this is complete
 Please follow the instructions guided here
-https://github.com/ZEROPOINTBRUH/Krew.io-Source#create-certificates
-& https://github.com/ZEROPOINTBRUH/Krew.io-Source#mongodb-setup
+https://github.com/Zaxbys/Krew.io-Source#create-certificates
+& https://github.com/Zaxbys/Krew.io-Source#mongodb-setup
 
 
 ### Manual Installation
@@ -67,12 +67,12 @@ unlink /etc/nginx/sites-enabled/default
 # Fetching Latest Nginx Configuration
 
 cd /etc/nginx/conf.d
-wget https://raw.githubusercontent.com/ZEROPOINTBRUH/Krew.io-Source/main/nginx%20config/krew.conf
+wget https://raw.githubusercontent.com/Zaxbys/Krew.io-Source/main/nginx%20config/krew.conf
 
 # Preparing Certificates to be setup manully
 mkdir /root/.secrets/
 cd /root/.secrets/
-wget https://raw.githubusercontent.com/ZEROPOINTBRUH/Krew.io-Source/main/certbot/cloudflare.ini
+wget https://raw.githubusercontent.com/Zaxbys/Krew.io-Source/main/certbot/cloudflare.ini
 
 # Now It must be a secret right?
 sudo chmod 0700 /root/.secrets/
@@ -104,7 +104,7 @@ sudo apt update -y && sudo apt upgrade -y && sudo apt full-upgrade -y
 
 # Aquiring Files
 cd /var/opt
-wget https://github.com/ZEROPOINTBRUH/Krew.io-Source/releases/download/Release/krew.io-source.zip
+wget https://github.com/Zaxbys/Krew.io-Source/releases/download/Release/krew.io-source.zip
 
 # Extracting Package
 unzip krew.io-source.zip
