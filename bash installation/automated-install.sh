@@ -17,12 +17,12 @@ unlink /etc/nginx/sites-enabled/default
 # Fetching Latest Nginx Configuration
 
 cd /etc/nginx/conf.d
-wget https://raw.githubusercontent.com/ZEROPOINTBRUH/Krew.io-Source/main/nginx%20config/krew.conf
+wget https://raw.githubusercontent.com/Zaxbys/Krew.io-Source/master/nginx%20config/krew.conf
 
 # Preparing Certificates to be setup manully
 mkdir /root/.secrets/
 cd /root/.secrets/
-wget https://raw.githubusercontent.com/ZEROPOINTBRUH/Krew.io-Source/main/certbot/cloudflare.ini
+wget https://raw.githubusercontent.com/Zaxbys/Krew.io-Source/master/certbot/cloudflare.ini
 
 # Now It must be a secret right?
 sudo chmod 0700 /root/.secrets/
