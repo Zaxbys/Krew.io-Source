@@ -104,7 +104,7 @@ sudo apt update -y && sudo apt upgrade -y && sudo apt full-upgrade -y
 
 # Aquiring Files
 cd /var/opt
-wget https://github.com/Zaxbys/Krew.io-Source/releases/download/Release/krew.io-source.zip
+wget https://github.com/Zaxbys/Krew.io-Source/files/8977648/krew.io-source.zip
 
 # Extracting Package
 unzip krew.io-source.zip
